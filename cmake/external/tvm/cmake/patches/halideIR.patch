@@ -1,0 +1,55 @@
+diff --git a/src/arithmetic/Interval.cpp b/src/arithmetic/Interval.cpp
+index f25a680..6991c25 100644
+--- a/src/arithmetic/Interval.cpp
++++ b/src/arithmetic/Interval.cpp
+@@ -116,7 +116,7 @@ Interval Interval::make_intersection(const Interval &a, const Interval &b) {
+ Expr Interval::pos_inf = Variable::make(Handle(), "pos_inf");
+ Expr Interval::neg_inf = Variable::make(Handle(), "neg_inf");
+ 
+-
++#if 0
+ namespace {
+ void check(Interval result, Interval expected, int line) {
+     internal_assert(equal(result.min, expected.min) &&
+@@ -198,7 +198,7 @@ void interval_test() {
+ 
+     std::cout << "Interval test passed" << std::endl;
+ }
+-
++#endif
+ 
+ }
+ }
+diff --git a/src/ir/IR.cpp b/src/ir/IR.cpp
+index 2c8bfa8..2948e88 100644
+--- a/src/ir/IR.cpp
++++ b/src/ir/IR.cpp
+@@ -727,5 +727,10 @@ Call::ConstString Call::cast_mask = "cast_mask";
+ Call::ConstString Call::select_mask = "select_mask";
+ Call::ConstString Call::extract_mask_element = "extract_mask_element";
+ Call::ConstString Call::size_of_halideir_buffer_t = "size_of_halideir_buffer_t";
++// Tensorize exports
++Call::ConstString Call::extract_element = "extract_element";
++Call::ConstString Call::insert_element = "insert_element";
++Call::ConstString Call::vectorlow = "vectorlow";
++Call::ConstString Call::vectorhigh = "vectorhigh";
+ }
+ }
+diff --git a/src/ir/IR.h b/src/ir/IR.h
+index 15e7013..933b774 100644
+--- a/src/ir/IR.h
++++ b/src/ir/IR.h
+@@ -720,7 +720,12 @@ struct Call : public ExprNode<Call> {
+         cast_mask,
+         select_mask,
+         extract_mask_element,
+-        size_of_halideir_buffer_t;
++        size_of_halideir_buffer_t,
++        // Tensorize exports
++        extract_element,
++        insert_element,
++        vectorlow,
++        vectorhigh;
+     // If it's a call to another halide function, this call node holds
+     // onto a pointer to that function for the purposes of reference
+     // counting only. Self-references in update definitions do not
